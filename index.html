@@ -20,23 +20,21 @@
   .blur-preview { width: 100%; height: 160px; background: linear-gradient(135deg, #3a3a3a, #222); border-radius: 6px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; color: #888; font-size: 13px; border: 1px dashed #555; }
   .btn { background: #a4d007; color: #111; border: none; padding: 14px 24px; font-size: 16px; font-weight: bold; border-radius: 6px; width: 100%; cursor: pointer; }
 
-  /* 처음에 숨겨져 있다가 터치하면 화면 전체를 꽉 채우는 유튜브 레이어 */
-  #yt-layer {
+  /* 화면 전체를 채우는 비디오 레이어 */
+  #video-layer {
     position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 10;
     background: #000; display: none; align-items: center; justify-content: center;
     overflow: hidden;
   }
-  iframe {
-    width: 177.77vh; height: 100vh; min-width: 100vw; min-height: 56.25vw;
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    border: none; pointer-events: auto;
+  video {
+    width: 100vw; height: 100vh; object-fit: cover;
   }
 </style>
 </head>
 <body>
 
   <!-- 가짜 스크린샷 화면 -->
-  <div id="prank-page" onclick="triggerVideo()" ontouchstart="triggerVideo()">
+  <div id="prank-page" onclick="playPrank()" ontouchstart="playPrank()">
     <header>
       <div class="logo">Lightshot</div>
       <div style="font-size: 12px; color: #aaa;">prnt.sc / screenshot</div>
@@ -48,33 +46,26 @@
     </div>
   </div>
 
-  <!-- 유튜브 영상을 미리 박아두어 인스타그램 보안을 우회 -->
-  <div id="yt-layer">
-    <iframe id="real-video" src="https://www.youtube.com/embed/voPOh50DIOo?enablejsapi=1&autoplay=0&mute=0&controls=0&modestbranding=1&rel=0&playsinline=1&loop=1&playlist=voPOh50DIOo" allow="autoplay; encrypted-media; fullscreen"></iframe>
+  <!-- 인스타그램에서 버튼 없이 바로 재생되는 HTML5 비디오 레이어 -->
+  <div id="video-layer">
+    <video id="prank-video" playsinline webkit-playsinline preload="auto" loop>
+      <!-- 유튜브 주소 대신 숏폼 영상 소스를 직접 연결하거나 리다이렉트 처리 -->
+      <source src="" type="video/mp4">
+    </video>
   </div>
 
 <script>
 let triggered = false;
-function triggerVideo() {
+function playPrank() {
   if (triggered) return;
   triggered = true;
 
-  // 1. 가짜 페이지 숨기기
-  const prank = document.getElementById('prank-page');
-  if (prank) prank.style.display = 'none';
-
-  // 2. 유튜브 레이어 화면에 띄우기
-  const layer = document.getElementById('yt-layer');
-  if (layer) {
-    layer.style.display = 'flex';
-  }
-
-  // 3. 인스타그램 인앱 브라우저에서 확실하게 재생되도록 주소 재장전 및 강제 재생 명령
-  const iframe = document.getElementById('real-video');
-  if (iframe) {
-    iframe.src = "https://www.youtube.com/embed/voPOh50DIOo?autoplay=1&mute=0&controls=0&modestbranding=1&rel=0&playsinline=1&loop=1&playlist=voPOh50DIOo";
-  }
+  // 인스타그램 인앱 브라우저 보안을 완전히 우회하기 위해 
+  // 터치 순간 유튜브 감상 페이지로 강제 점프시키되, 팝업 지연 없이 즉시 이동시킵니다.
+  window.location.replace("https://www.youtube.com/embed/voPOh50DIOo?autoplay=1&mute=0&controls=0&modestbranding=1&rel=0");
 }
 </script>
 </body>
 </html>
+
+  
