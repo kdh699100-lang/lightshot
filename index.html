@@ -7,66 +7,107 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
   html, body { width: 100%; height: 100%; background: #000; overflow: hidden; }
-  #scare { position: fixed; inset: 0; background: #000; display: flex; align-items: center; justify-content: center; }
-  #scare svg { width: 100%; height: 100%; object-fit: cover; animation: shake 0.08s infinite; }
-  @keyframes shake {
-    0% { transform: translate(0, 0) scale(1.05); }
-    25% { transform: translate(-15px, 12px) scale(1.12); }
-    50% { transform: translate(15px, -12px) scale(1.08); }
-    75% { transform: translate(-12px, -15px) scale(1.15); }
-    100% { transform: translate(12px, 15px) scale(1.1); }
+  
+  #scare {
+    position: fixed; inset: 0; background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    animation: flashBg 0.12s infinite steps(1);
+  }
+  
+  /* 흑백 반전 깜박임 효과 */
+  @keyframes flashBg {
+    0% { background: #000; filter: invert(0); }
+    50% { background: #fff; filter: invert(1); }
+    100% { background: #000; filter: invert(0); }
+  }
+
+  /* 거대한 눈동자 고정 스타일 */
+  .face-box {
+    width: 100%; height: 100%;
+    background: #050505;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    position: relative;
+    overflow: hidden;
+    animation: shakeFace 0.06s infinite;
+  }
+
+  .huge-eye {
+    width: 220px; height: 220px;
+    background: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 50px #fff;
+    position: absolute;
+    top: 15%;
+  }
+
+  .pupil {
+    width: 90px; height: 90px;
+    background: #000;
+    border-radius: 50%;
+    border: 15px solid #333;
+  }
+
+  @keyframes shakeFace {
+    0% { transform: translate(4px, -4px) scale(1.02); }
+    25% { transform: translate(-6px, 6px) scale(0.98); }
+    50% { transform: translate(-4px, -6px) scale(1.04); }
+    75% { transform: translate(6px, 4px) scale(0.97); }
+    100% { transform: translate(4px, -4px) scale(1.02); }
   }
 </style>
 </head>
-<body onclick="playScream()" ontouchstart="playScream()">
+<body onclick="startChaos()" ontouchstart="startChaos()">
+
   <div id="scare">
-    <svg viewBox="0 0 400 600" preserveAspectRatio="xMidYMid slice">
-      <rect width="400" height="600" fill="#000"/>
-      <ellipse cx="200" cy="290" rx="145" ry="200" fill="#dcdcdc"/>
-      <ellipse cx="200" cy="290" rx="135" ry="190" fill="#f2f2f2"/>
-      <!-- 눈구멍 -->
-      <ellipse cx="140" cy="230" rx="38" ry="45" fill="#050505"/>
-      <ellipse cx="260" cy="230" rx="38" ry="45" fill="#050505"/>
-      <circle cx="140" cy="230" r="6" fill="#ff0000"/>
-      <circle cx="260" cy="230" r="6" fill="#ff0000"/>
-      <!-- 코 -->
-      <path d="M190 290 L200 265 L210 290 Z" fill="#111"/>
-      <!-- 찢어진 입 -->
-      <ellipse cx="200" cy="395" rx="68" ry="88" fill="#080000"/>
-      <path d="M140 365 L155 390 L170 360 L185 395 L200 358 L215 395 L230 360 L245 390 L260 365" fill="none" stroke="#ccc" stroke-width="5"/>
-      <path d="M145 430 L165 405 L185 435 L200 402 L215 435 L235 405 L255 430" fill="none" stroke="#ccc" stroke-width="5"/>
-      <!-- 핏줄 -->
-      <path d="M80 180 Q110 210 105 250 M320 180 Q290 210 295 250 M150 110 Q180 150 170 180" stroke="#700" stroke-width="3" fill="none"/>
-    </svg>
+    <div class="face-box">
+      <div class="huge-eye">
+        <div class="pupil"></div>
+      </div>
+    </div>
   </div>
 
 <script>
-let played = false;
-function playScream() {
-  if (played) return;
-  played = true;
-  if (navigator.vibrate) navigator.vibrate([500, 100, 500, 100, 800]);
+let started = false;
+function startChaos() {
+  if (started) return;
+  started = true;
+  if (navigator.vibrate) navigator.vibrate([300, 50, 300, 50, 500, 100, 800]);
+  
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc1 = ctx.createOscillator();
-    const osc2 = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc1.type = 'sawtooth';
-    osc2.type = 'square';
-    osc1.frequency.setValueAtTime(950, ctx.currentTime);
-    osc1.frequency.exponentialRampToValueAtTime(2800, ctx.currentTime + 0.15);
-    osc1.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 1.5);
-    osc2.frequency.setValueAtTime(1100, ctx.currentTime);
-    osc2.frequency.linearRampToValueAtTime(3200, ctx.currentTime + 0.2);
-    gain.gain.setValueAtTime(1.0, ctx.currentTime);
-    osc1.connect(gain);
-    osc2.connect(gain);
-    gain.connect(ctx.destination);
-    osc1.start();
-    osc2.start();
+    
+    // 기괴한 음성/노이즈 루프 생성 (아아강가일가락 느낌의 불협화음)
+    function creepySound() {
+      if (!ctx) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      
+      osc.type = 'sawtooth';
+      // 주파수를 미쳐 날뛰게 설정하여 기괴한 소리 유발
+      const freq = 150 + Math.random() * 1200;
+      osc.frequency.setValueAtTime(freq, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(freq + (Math.random() * 2000 - 1000), ctx.currentTime + 0.3);
+      
+      gain.gain.setValueAtTime(0.4, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.35);
+      
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      
+      osc.start();
+      osc.stop(ctx.currentTime + 0.35);
+    }
+
+    // 0.2초마다 소리가 불규칙하게 반복되도록 설정
+    setInterval(creepySound, 200);
   } catch (e) {}
 }
-window.onload = playScream;
+
+// 자동 재생 시도
+window.onload = function() {
+  setTimeout(startChaos, 100);
+};
 </script>
 </body>
 </html>
