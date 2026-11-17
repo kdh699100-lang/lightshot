@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Lightshot — Captured with Lightshot</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+  body { background: #1e1e1e; color: #fff; font-family: Arial, sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+  header { background: #2c2c2c; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #3a3a3a; }
+  .logo { font-weight: bold; font-size: 18px; color: #a4d007; letter-spacing: 0.5px; }
+  .main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; }
+  .box { background: #282828; border: 1px solid #3e3e3e; border-radius: 8px; padding: 35px 25px; max-width: 360px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+  .blur-preview { width: 100%; height: 160px; background: linear-gradient(135deg, #3a3a3a, #222); border-radius: 6px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; color: #888; font-size: 13px; border: 1px dashed #555; }
+  .btn { background: #a4d007; color: #111; border: none; padding: 14px 24px; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%; }
+  .btn:active { transform: scale(0.98); }
+  #scare { display: none; position: fixed; inset: 0; background: #000; z-index: 9999; align-items: center; justify-content: center; }
+  #scare svg { width: 100%; height: 100%; object-fit: cover; animation: shake 0.08s infinite; }
+  @keyframes shake {
+    0% { transform: translate(0, 0) scale(1.05); }
+    25% { transform: translate(-15px, 12px) scale(1.12); }
+    50% { transform: translate(15px, -12px) scale(1.08); }
+    75% { transform: translate(-12px, -15px) scale(1.15); }
+    100% { transform: translate(12px, 15px) scale(1.1); }
+  }
+</style>
+</head>
+<body onclick="triggerScare()">
+  <header>
+    <div class="logo">Lightshot</div>
+    <div style="font-size: 12px; color: #aaa;">prnt.sc / screenshot</div>
+  </header>
+  <div class="main">
+    <div class="box">
+      <div class="blur-preview">🔒 보호된 스크린샷 (1080x1920.png)</div>
+      <p style="font-size: 14px; color: #ccc; margin-bottom: 18px;">성인 인증 또는 보안 확인이 필요한 이미지입니다.</p>
+      <button class="btn" onclick="triggerScare()">스크린샷 원본 보기</button>
+    </div>
+  </div>
+
+  <div id="scare">
+    <svg viewBox="0 0 400 600" preserveAspectRatio="xMidYMid slice">
+      <rect width="400" height="600" fill="#000"/>
+      <ellipse cx="200" cy="290" rx="145" ry="200" fill="#dcdcdc"/>
+      <ellipse cx="200" cy="290" rx="135" ry="190" fill="#f2
