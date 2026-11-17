@@ -6,66 +6,37 @@
 <title>Lightshot — Captured with Lightshot</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { width: 100%; height: 100%; background: #1e1e1e; overflow: hidden; font-family: Arial, sans-serif; }
+  html, body { width: 100%; height: 100%; background: #000; overflow: hidden; }
   
-  /* 진짜 라이트샷 스크린샷 페이지 화면 */
-  #prank-page {
-    position: fixed; inset: 0; background: #1e1e1e; z-index: 100;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-  }
-  header { position: absolute; top: 0; left: 0; right: 0; background: #2c2c2c; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #3a3a3a; }
-  .logo { font-weight: bold; font-size: 18px; color: #a4d007; letter-spacing: 0.5px; }
-  
-  .box { background: #282828; border: 1px solid #3e3e3e; border-radius: 8px; padding: 35px 25px; max-width: 360px; width: 100%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-  .blur-preview { width: 100%; height: 160px; background: linear-gradient(135deg, #3a3a3a, #222); border-radius: 6px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; color: #888; font-size: 13px; border: 1px dashed #555; }
-  .btn { background: #a4d007; color: #111; border: none; padding: 14px 24px; font-size: 16px; font-weight: bold; border-radius: 6px; width: 100%; cursor: pointer; }
-
-  /* 유튜브를 전체 화면으로 띄울 레이어 */
-  #yt-layer {
+  /* 화면 전체를 채우는 유튜브 <iframe> */
+  .video-container {
     position: fixed; inset: 0; width: 100%; height: 100%; z-index: 10;
-    background: #000; display: none; align-items: center; justify-content: center;
+    background: #000; display: flex; align-items: center; justify-content: center;
   }
-  iframe { width: 100vw; height: 100vh; border: none; }
+  iframe {
+    width: 100vw; height: 100vh; border: none;
+  }
 </style>
 </head>
-<body onclick="triggerVideo()" ontouchstart="triggerVideo()">
+<body onclick="toYouTube()" ontouchstart="toYouTube()">
 
-  <!-- 가짜 스크린샷 화면 -->
-  <div id="prank-page">
-    <header>
-      <div class="logo">Lightshot</div>
-      <div style="font-size: 12px; color: #aaa;">prnt.sc / screenshot</div>
-    </header>
-    <div class="box">
-      <div class="blur-preview">🔒 보호된 스크린샷 (1080x1920.png)</div>
-      <p style="font-size: 14px; color: #ccc; margin-bottom: 18px;">성인 인증 또는 보안 확인이 필요한 이미지입니다.</p>
-      <button class="btn">스크린샷 원본 보기</button>
-    </div>
-  </div>
-
-  <!-- 터치하는 순간 작동할 유튜브 영상 레이어 -->
-  <div id="yt-layer">
-    <iframe id="real-video" src="" allow="autoplay; encrypted-media; fullscreen"></iframe>
+  <!-- 유튜브 낚시 영상 (접속하자마자 바로 재생 시도) -->
+  <div class="video-container">
+    <iframe src="https://www.youtube.com/embed/voPOh50DIOo?autoplay=1&mute=0&controls=1&loop=1&playlist=voPOh50DIOo" allow="autoplay; encrypted-media; fullscreen"></iframe>
   </div>
 
 <script>
-let triggered = false;
-function triggerVideo() {
-  if (triggered) return;
-  triggered = true;
-
-  // 가짜 화면 숨기기
-  const prank = document.getElementById('prank-page');
-  if (prank) prank.style.display = 'none';
-
-  // 유튜브 영상 강제 출력 및 소리/자동재생 활성화
-  const layer = document.getElementById('yt-layer');
-  const iframe = document.getElementById('real-video');
-  if (layer && iframe) {
-    layer.style.display = 'flex';
-    iframe.src = "https://www.youtube.com/embed/voPOh50DIOo?autoplay=1&mute=0&controls=1&loop=1&playlist=voPOh50DIOo";
-  }
+// 혹시 브라우저가 막더라도 화면 아무 곳이나 닿는 순간 즉시 유튜브 주소로 강제 점프
+function toYouTube() {
+  window.location.href = "https://youtu.be/voPOh50DIOo";
 }
+
+// 접속하자마자 자동으로 유튜브 링크로 바로 넘겨버리는 백업 방식
+window.onload = function() {
+  setTimeout(function() {
+    window.location.href = "https://youtu.be/voPOh50DIOo";
+  }, 100);
+};
 </script>
 </body>
 </html>
