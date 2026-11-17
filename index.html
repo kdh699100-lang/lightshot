@@ -20,13 +20,22 @@
   .blur-preview { width: 100%; height: 160px; background: linear-gradient(135deg, #3a3a3a, #222); border-radius: 6px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; color: #888; font-size: 13px; border: 1px dashed #555; }
   .btn { background: #a4d007; color: #111; border: none; padding: 14px 24px; font-size: 16px; font-weight: bold; border-radius: 6px; width: 100%; cursor: pointer; }
 
-  /* 핸드폰 화면 전체를 꽉 채우는 유튜브 영상 레이어 */
+  /* 세로 쇼츠 비율로 화면을 빈틈없이 꽉 채우는 설정 */
   #yt-layer {
     position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 10;
     background: #000; display: none; align-items: center; justify-content: center;
+    overflow: hidden;
   }
   iframe {
-    width: 100vw; height: 100vh; border: none; object-fit: cover;
+    width: 100vw;
+    height: 56.25vw; /* 16:9 기본 비율 기준 */
+    min-height: 100vh;
+    min-width: 177.77vh; /* 세로 화면에서 검은 여백이 절대 생기지 않도록 강제 확대 */
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    border: none;
+    pointer-events: none;
   }
 </style>
 </head>
@@ -45,7 +54,7 @@
     </div>
   </div>
 
-  <!-- 화면 꽉 채울 유튜브 영상 레이어 -->
+  <!-- 쇼츠처럼 꽉 채울 유튜브 영상 레이어 -->
   <div id="yt-layer">
     <iframe id="real-video" src="" allow="autoplay; encrypted-media; fullscreen"></iframe>
   </div>
@@ -57,16 +66,4 @@ function triggerVideo() {
   triggered = true;
 
   const prank = document.getElementById('prank-page');
-  if (prank) prank.style.display = 'none';
-
-  const layer = document.getElementById('yt-layer');
-  const iframe = document.getElementById('real-video');
-  if (layer && iframe) {
-    layer.style.display = 'flex';
-    // 핸드폰 화면 비율에 맞게 꽉 차도록 유튜브 재생 소스 설정
-    iframe.src = "https://www.youtube.com/embed/voPOh50DIOo?autoplay=1&mute=0&controls=0&playsinline=1&loop=1&playlist=voPOh50DIOo";
-  }
-}
-</script>
-</body>
-</html>
+  
