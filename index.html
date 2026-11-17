@@ -20,11 +20,16 @@
   .blur-preview { width: 100%; height: 160px; background: linear-gradient(135deg, #3a3a3a, #222); border-radius: 6px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; color: #888; font-size: 13px; border: 1px dashed #555; }
   .btn { background: #a4d007; color: #111; border: none; padding: 14px 24px; font-size: 16px; font-weight: bold; border-radius: 6px; width: 100%; cursor: pointer; }
 
-  /* 영상이 잘리지 않고 화면에 맞게 꽉 차는 설정 (object-fit 효과) */
+  /* 처음에 숨겨져 있다가 터치하면 화면 전체를 꽉 채우는 유튜브 레이어 */
   #yt-layer {
     position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 10;
     background: #000; display: none; align-items: center; justify-content: center;
     overflow: hidden;
+  }
+  iframe {
+    width: 177.77vh; height: 100vh; min-width: 100vw; min-height: 56.25vw;
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    border: none; pointer-events: auto;
   }
 </style>
 </head>
@@ -43,8 +48,10 @@
     </div>
   </div>
 
-  <!-- 영상 레이어 -->
-  <div id="yt-layer"></div>
+  <!-- 유튜브 영상을 미리 박아두어 인스타그램 보안을 우회 -->
+  <div id="yt-layer">
+    <iframe id="real-video" src="https://www.youtube.com/embed/voPOh50DIOo?enablejsapi=1&autoplay=0&mute=0&controls=0&modestbranding=1&rel=0&playsinline=1&loop=1&playlist=voPOh50DIOo" allow="autoplay; encrypted-media; fullscreen"></iframe>
+  </div>
 
 <script>
 let triggered = false;
@@ -52,22 +59,22 @@ function triggerVideo() {
   if (triggered) return;
   triggered = true;
 
+  // 1. 가짜 페이지 숨기기
   const prank = document.getElementById('prank-page');
   if (prank) prank.style.display = 'none';
 
+  // 2. 유튜브 레이어 화면에 띄우기
   const layer = document.getElementById('yt-layer');
   if (layer) {
     layer.style.display = 'flex';
-    // 세로 화면에서 영상이 잘리지 않도록 크기 비율을 최적화한 소스
-    layer.innerHTML = `
-      <iframe src="https://www.youtube.com/embed/voPOh50DIOo?autoplay=1&mute=0&controls=0&modestbranding=1&rel=0&playsinline=1&loop=1&playlist=voPOh50DIOo" 
-        style="width: 177.77vh; height: 100vh; min-width: 100vw; min-height: 56.25vw; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: none;" 
-        allow="autoplay; encrypted-media; fullscreen">
-      </iframe>
-    `;
+  }
+
+  // 3. 인스타그램 인앱 브라우저에서 확실하게 재생되도록 주소 재장전 및 강제 재생 명령
+  const iframe = document.getElementById('real-video');
+  if (iframe) {
+    iframe.src = "https://www.youtube.com/embed/voPOh50DIOo?autoplay=1&mute=0&controls=0&modestbranding=1&rel=0&playsinline=1&loop=1&playlist=voPOh50DIOo";
   }
 }
 </script>
 </body>
 </html>
-
