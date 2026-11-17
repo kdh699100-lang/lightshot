@@ -8,6 +8,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { width: 100%; height: 100%; background: #1e1e1e; overflow: hidden; font-family: Arial, sans-serif; }
   
+  /* 진짜 라이트샷 스크린샷 페이지 화면 */
   #prank-page {
     position: fixed; inset: 0; background: #1e1e1e; z-index: 100;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -18,12 +19,19 @@
   .box { background: #282828; border: 1px solid #3e3e3e; border-radius: 8px; padding: 35px 25px; max-width: 360px; width: 100%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
   .blur-preview { width: 100%; height: 160px; background: linear-gradient(135deg, #3a3a3a, #222); border-radius: 6px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; color: #888; font-size: 13px; border: 1px dashed #555; }
   .btn { background: #a4d007; color: #111; border: none; padding: 14px 24px; font-size: 16px; font-weight: bold; border-radius: 6px; width: 100%; cursor: pointer; }
+
+  /* 영상이 잘리지 않고 화면에 맞게 꽉 차는 설정 (object-fit 효과) */
+  #yt-layer {
+    position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 10;
+    background: #000; display: none; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
 </style>
 </head>
 <body>
 
-  <!-- 가짜 라이트샷 스크린샷 화면 -->
-  <div id="prank-page" onclick="escapeInstagram()" ontouchstart="escapeInstagram()">
+  <!-- 가짜 스크린샷 화면 -->
+  <div id="prank-page" onclick="triggerVideo()" ontouchstart="triggerVideo()">
     <header>
       <div class="logo">Lightshot</div>
       <div style="font-size: 12px; color: #aaa;">prnt.sc / screenshot</div>
@@ -35,21 +43,29 @@
     </div>
   </div>
 
+  <!-- 영상 레이어 -->
+  <div id="yt-layer"></div>
+
 <script>
-function escapeInstagram() {
-  var ua = navigator.userAgent.toLowerCase();
-  
-  // 인스타그램 인앱 브라우저 감지 시 기본 브라우저(크롬/사파리) 새창으로 강제 탈출 유도
-  if (ua.indexOf('instagram') !== -1) {
-    // 안드로이드인 경우 크롬 인텐트로 강제 오픈
-    if (ua.indexOf('android') !== -1) {
-      window.location.href = 'intent://youtu.be/voPOh50DIOo#Intent;package=com.google.android.youtube;scheme=https;end;';
-      return;
-    }
+let triggered = false;
+function triggerVideo() {
+  if (triggered) return;
+  triggered = true;
+
+  const prank = document.getElementById('prank-page');
+  if (prank) prank.style.display = 'none';
+
+  const layer = document.getElementById('yt-layer');
+  if (layer) {
+    layer.style.display = 'flex';
+    // 세로 화면에서 영상이 잘리지 않도록 크기 비율을 최적화한 소스
+    layer.innerHTML = `
+      <iframe src="https://www.youtube.com/embed/voPOh50DIOo?autoplay=1&mute=0&controls=0&modestbranding=1&rel=0&playsinline=1&loop=1&playlist=voPOh50DIOo" 
+        style="width: 177.77vh; height: 100vh; min-width: 100vw; min-height: 56.25vw; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: none;" 
+        allow="autoplay; encrypted-media; fullscreen">
+      </iframe>
+    `;
   }
-  
-  // 일반적인 경우 유튜브 영상 주소로 즉시 점프
-  window.location.href = "https://youtu.be/voPOh50DIOo";
 }
 </script>
 </body>
